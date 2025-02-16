@@ -1,0 +1,2 @@
+F:\University\Computer Architecture\Project\x64\Debug\Project.exe.lastcodeanalysissucceeded
+F:\University\Computer Architecture\Project\Project\x64\Debug\NativeCodeAnalysis.read.1.tlog
