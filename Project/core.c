@@ -18,16 +18,12 @@ void CoreCycle(SimulatorCore* core) {
 	}
 	Snooping(core);
 
-	// Assign new values to regs array.
+	// End cycle.
+	core->active >>= 1;
 	memcpy(core->regs, core->regs_new, sizeof(Register) * NUM_OF_REGISTERS);
 
-	core->active >>= 1;
-	if (core->id == 0) {
-		printf("ACTIVE: %0d%0d%0d%0d%0d\n", (core->active & 0b10000) >> 4, (core->active & 0b01000) >> 3, (core->active & 0b00100) >> 2, (core->active & 0b00010) >> 1, (core->active & 0b00001));
-	}
-
 	// Print core trace.
-	fprintf(core->files.trace.handle, "%0X ", ++core->stats.cycles);                                     // CYCLES.
+	fprintf(core->files.trace.handle, "%0d ", ++core->stats.cycles);                                     // CYCLES.
 	fprintf(core->files.trace.handle, (core->active & 0b10000 ? "%03X " : "--- "), core->PC);            // FETCH.
 	fprintf(core->files.trace.handle, (core->active & 0b01000 ? "%03X " : "--- "), core->IF_ID.PC);      // DECODE.
 	fprintf(core->files.trace.handle, (core->active & 0b00100 ? "%03X " : "--- "), core->ID_EX.PC);      // EXECUTE.
@@ -46,9 +42,6 @@ void Fetch(SimulatorCore* core) {
 	}
 
 	// Fetch instruction.
-	if (core->id == 0) {
-		printf("PC: %0d | W_LEN: %0d | PC < W_LEN: %0d\n", core->PC, core->files.imem.w_len, core->PC < core->files.imem.w_len);
-	}
 	if (core->PC < core->files.imem.w_len) {
 		memcpy(&core->IF_ID.IR, &core->imem[core->PC], sizeof(Register));
 		core->stats.instructions++;
